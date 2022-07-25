@@ -49,7 +49,15 @@
 	let searchResult: any = {};
 	let isMount: boolean = false;
 
-	onMount(() => {
+	onMount(async () => {
+		let pokemons: any = [];
+		for (let i = 0; i < pokemon.results.length; i++) {
+			const res = await fetch(pokemon.results[i].url);
+			const details = await res.json();
+			pokemons.push({ ...details, url: pokemon.results[i].url });
+		}
+
+		allPokemons.set({ results: pokemons });
 		isMount = true;
 	});
 
