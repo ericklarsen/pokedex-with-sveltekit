@@ -24,6 +24,8 @@
 	import PokemonList from '$lib/components/pokemon-list/index.svelte';
 	import PokemonPagination from '$lib/components/pokemon-pagination/index.svelte';
 	import MenuIcon from '$lib/assets/menu-icon.svelte';
+	import Loader from '$lib/components/loader/index.svelte';
+
 	import { isOpenTypes, isLoading, allPokemons } from '$lib/stores/index';
 	import { onMount } from 'svelte';
 
@@ -89,6 +91,10 @@
 
 {#if $isOpenTypes}
 	<PokemonTypes />
+{/if}
+
+{#if !isMount}
+	<Loader />
 {/if}
 
 <div class="w-5 h-5 absolute right-5 top-12 cursor-pointer" on:click={() => isOpenTypes.set(true)}>
