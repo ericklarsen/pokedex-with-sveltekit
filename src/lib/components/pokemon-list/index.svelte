@@ -4,10 +4,12 @@
 	import Pokeball from '$lib/assets/pokeball.svg';
 
 	export let details: any;
-	let sprites: any = details?.sprites.front_default;
+	let sprites: any = Pokeball;
 
-	if (!details?.sprites.front_default) {
+	if (!details?.sprites?.front_default) {
 		sprites = Pokeball;
+	} else {
+		sprites = details?.sprites?.front_default;
 	}
 
 	const handleClick = async (param: any) => {

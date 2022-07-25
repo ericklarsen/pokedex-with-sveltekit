@@ -3,14 +3,14 @@
 		const res = await fetch('https://pokeapi.co/api/v2/pokemon/');
 		const data = await res.json();
 
-		let pokemons = [];
-		for (let i = 0; i < data.results.length; i++) {
-			const res = await fetch(data.results[i].url);
-			const details = await res.json();
-			pokemons.push({ ...details, url: data.results[i].url });
-		}
+		// let pokemons = [];
+		// for (let i = 0; i < data.results.length; i++) {
+		// 	const res = await fetch(data.results[i].url);
+		// 	const details = await res.json();
+		// 	pokemons.push({ ...details, url: data.results[i].url });
+		// }
 
-		data.results = pokemons;
+		// data.results = pokemons;
 		return {
 			props: {
 				pokemon: data
