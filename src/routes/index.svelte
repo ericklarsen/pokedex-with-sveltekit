@@ -25,6 +25,7 @@
 	import PokemonPagination from '$lib/components/pokemon-pagination/index.svelte';
 	import MenuIcon from '$lib/assets/menu-icon.svelte';
 	import { isOpenTypes, isLoading, allPokemons } from '$lib/stores/index';
+	import { onMount } from 'svelte';
 
 	interface results {
 		id: number;
@@ -44,6 +45,11 @@
 	export let pokemon: Pokemon;
 	let timer: any;
 	let searchResult: any = {};
+	let isMount: boolean = false;
+
+	onMount(() => {
+		isMount = true;
+	});
 
 	const debounce = (e: any) => {
 		clearTimeout(timer);
@@ -66,7 +72,15 @@
 		}, 500);
 	};
 
-	$: console.log($allPokemons);
+	$: {
+		if (isMount) {
+			if ($isOpenTypes) {
+				document.body.style.overflow = 'hidden';
+			} else {
+				document.body.style.overflow = '';
+			}
+		}
+	}
 </script>
 
 <svelte:head>
@@ -77,10 +91,7 @@
 	<PokemonTypes />
 {/if}
 
-<div
-	class="w-5 h-5 absolute right-5 top-12 cursor-pointer"
-	on:click={() => isOpenTypes.update((n) => true)}
->
+<div class="w-5 h-5 absolute right-5 top-12 cursor-pointer" on:click={() => isOpenTypes.set(true)}>
 	<svelte:component this={MenuIcon} />
 </div>
 
