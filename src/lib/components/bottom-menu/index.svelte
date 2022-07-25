@@ -30,7 +30,7 @@
 			>
 				<p class="capitalize">{item.id}</p>
 				{#if $page.url.pathname === item.url}
-					<div class="w-2 h-2 bg-green-500 mt-1 rounded-[100%]" transition:fade />
+					<div class="w-2 h-2 bg-green-500 mt-1 rounded-[100%]" />
 				{/if}
 			</a>
 		{/each}
