@@ -24,7 +24,7 @@
 
 <div class="w-full flex items-center justify-between mt-10">
 	<div
-		class={`w-[48.5%] p-2 bg-black/75 text-white text-center ${
+		class={`w-[48.5%] p-2 bg-black/75 text-white text-center cursor-pointer ${
 			!pokemon.previous && 'opacity-50 pointer-events-none'
 		}`}
 		on:click={() => handlePage(pokemon.previous)}
@@ -32,7 +32,7 @@
 		Previous
 	</div>
 	<div
-		class={`w-[48.5%] p-2 bg-black/75 text-white text-center ${
+		class={`w-[48.5%] p-2 bg-black/75 text-white text-center cursor-pointer ${
 			!pokemon.next && 'opacity-50 pointer-events-none'
 		}`}
 		on:click={() => handlePage(pokemon.next)}

@@ -57,8 +57,7 @@
 			pokemons.push({ ...details, url: pokemon.results[i].url });
 		}
 
-		allPokemons.set({ results: pokemons });
-		isMount = true;
+		allPokemons.set({ ...pokemon, results: pokemons });
 	});
 
 	const debounce = (e: any) => {
@@ -99,10 +98,6 @@
 
 {#if $isOpenTypes}
 	<PokemonTypes />
-{/if}
-
-{#if !isMount}
-	<Loader />
 {/if}
 
 <div class="w-5 h-5 absolute right-5 top-12 cursor-pointer" on:click={() => isOpenTypes.set(true)}>
