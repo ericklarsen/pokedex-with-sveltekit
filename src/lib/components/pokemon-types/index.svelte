@@ -1,13 +1,15 @@
 <script lang="ts">
-	import { isOpenTypes, isLoading, allPokemons, currentTypes } from '$lib/stores/index';
-	import { fly } from 'svelte/transition';
+	import { isOpenTypes, allPokemons, currentTypes, isLoading } from '$lib/stores/index';
+	import { cubicIn } from 'svelte/easing';
+	import { fly, fade } from 'svelte/transition';
 	let list: any = {};
+	let selfIsLoading = false;
 
 	(async () => {
-		isLoading.show();
+		selfIsLoading = true;
 		const res = await fetch('https://pokeapi.co/api/v2/type/');
 		list = await res.json();
-		isLoading.unshow();
+		selfIsLoading = false;
 	})();
 
 	const handleClick = async (param: string) => {
@@ -29,8 +31,11 @@
 	};
 </script>
 
-<div class="fixed w-full h-full top-0 left-0 bg-black/50 z-[99999]">
-	<div class="max-w-[475px] w-full mx-auto bg-white border-2 px-6 py-6" in:fly={{ y: -600 }}>
+<div
+	class="fixed w-full h-full top-0 left-0 bg-black/50 z-[99999]"
+	transition:fade={{ duration: 200 }}
+>
+	<div class="max-w-[475px] w-full mx-auto bg-white border-2 px-6 py-6" in:fly={{ y: -400 }}>
 		<div class="flex items-center justify-between w-full">
 			<h1 class="text-lg font-bold">Types</h1>
 			<p class="cursor-pointer hover:opacity-75" on:click={() => isOpenTypes.update(() => false)}>
@@ -39,7 +44,7 @@
 		</div>
 
 		<div class="w-full flex flex-wrap mt-5 ">
-			{#if !$isLoading}
+			{#if !selfIsLoading}
 				{#each list?.results as item}
 					<div
 						on:click={() => handleClick(item.url)}
