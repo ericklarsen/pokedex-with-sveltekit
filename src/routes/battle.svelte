@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Header from '$lib/components/header/index.svelte';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 
 	let moveX = 0;
 	let moveY = 0;
@@ -44,6 +44,11 @@
 		window.addEventListener('touchmove', (e) => onMove(e));
 	});
 
+	onDestroy(() => {
+		document.body.style.overflow = '';
+		onLeave();
+	});
+
 	const onStart = (e: any) => {
 		if (e.target) {
 			selectedEl = e.target;
@@ -71,11 +76,14 @@
 		aliasCursor.style.transform = `translateX(${moveX}px) translateY(${moveY}px)`;
 	};
 
-	const onLeave = (e: any) => {
+	const onLeave = (e?: any) => {
 		selectedEl = '';
 		moveX = 0;
 		moveY = 0;
-		aliasCursor.style.transform = '';
+
+		if (aliasCursor) {
+			aliasCursor.style.transform = '';
+		}
 	};
 
 	$: {
