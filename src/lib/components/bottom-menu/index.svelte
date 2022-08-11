@@ -26,7 +26,7 @@
 		{#each menu as item}
 			<a
 				href={item.url}
-				class="flex flex-col items-center justify-center font-mono flex-1 text-center font-bold transition-all hover:text-red-800"
+				class="flex flex-col items-center justify-center font-mono flex-1 text-center font-bold transition-all "
 			>
 				<p class="capitalize">{item.id}</p>
 				{#if $page.url.pathname === item.url}

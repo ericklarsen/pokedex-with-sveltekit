@@ -2,15 +2,6 @@
 	export async function load() {
 		const res = await fetch('https://pokeapi.co/api/v2/pokemon/');
 		const data = await res.json();
-
-		// let pokemons = [];
-		// for (let i = 0; i < data.results.length; i++) {
-		// 	const res = await fetch(data.results[i].url);
-		// 	const details = await res.json();
-		// 	pokemons.push({ ...details, url: data.results[i].url });
-		// }
-
-		// data.results = pokemons;
 		return {
 			props: {
 				pokemon: data
@@ -23,11 +14,12 @@
 	import PokemonTypes from '$lib/components/pokemon-types/index.svelte';
 	import PokemonList from '$lib/components/pokemon-list/index.svelte';
 	import PokemonPagination from '$lib/components/pokemon-pagination/index.svelte';
+	import Header from '$lib/components/header/index.svelte';
 	import MenuIcon from '$lib/assets/menu-icon.svelte';
-	import Loader from '$lib/components/loader/index.svelte';
 
 	import { isOpenTypes, isLoading, allPokemons } from '$lib/stores/index';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	interface results {
 		id: number;
@@ -81,6 +73,29 @@
 		}, 500);
 	};
 
+	const handleClick = async (param: any) => {
+		isLoading.show();
+		goto(`/pokemon/${param.id}`);
+	};
+
+	const handlePage = async (param: string) => {
+		isLoading.show();
+		const res = await fetch(param);
+		const data = await res.json();
+
+		let pokemons = [];
+		for (let i = 0; i < data.results.length; i++) {
+			const res = await fetch(data.results[i].url);
+			const details = await res.json();
+			pokemons.push({ ...details, url: data.results[i].url });
+		}
+
+		data.results = pokemons;
+		allPokemons.set(data);
+		isLoading.unshow();
+		window.scrollTo(0, 180);
+	};
+
 	$: {
 		if (isMount) {
 			if ($isOpenTypes) {
@@ -104,26 +119,25 @@
 	<svelte:component this={MenuIcon} />
 </div>
 
-<div class="w-full mb-10">
-	<h1 class="font-mono font-bold text-4xl text-center">Pokedex</h1>
+<Header title="Pokedex">
 	<input
 		type="text"
 		class="border-b p-2 px-4 w-full mt-12 focus:outline-1"
 		placeholder="Search by name..."
 		on:input={(e) => debounce(e)}
 	/>
-</div>
+</Header>
 
 {#if searchResult?.name}
-	<PokemonList details={searchResult} />
+	<PokemonList details={searchResult} onClick={() => handleClick(searchResult)} />
 {:else if $allPokemons.results.length}
 	{#each $allPokemons.results as item}
-		<PokemonList details={item} />
+		<PokemonList details={item} onClick={() => handleClick(item)} />
 	{/each}
-	<PokemonPagination pokemon={$allPokemons} />
+	<PokemonPagination onPage={handlePage} pokemon={$allPokemons} />
 {:else}
 	{#each pokemon?.results as item}
-		<PokemonList details={item} />
+		<PokemonList details={item} onClick={() => handleClick(item)} />
 	{/each}
-	<PokemonPagination {pokemon} />
+	<PokemonPagination onPage={handlePage} {pokemon} />
 {/if}
