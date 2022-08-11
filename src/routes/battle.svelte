@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Header from '$lib/components/header/index.svelte';
 	import { onMount, onDestroy } from 'svelte';
 
 	let moveX = 0;
@@ -35,18 +34,13 @@
 					break;
 			}
 		});
-		// realCursor.addEventListener('mousedown', (e: any) => onStart(e));
+		realCursor.addEventListener('mousedown', (e: any) => onStart(e));
 		window.addEventListener('mouseup', (e) => onLeave(e));
 		window.addEventListener('mousemove', (e) => onMove(e));
 
 		realCursor.addEventListener('touchstart', (e: any) => onStart(e));
 		window.addEventListener('touchend', (e) => onLeave(e));
 		window.addEventListener('touchmove', (e) => onMove(e));
-	});
-
-	onDestroy(() => {
-		document.body.style.overflow = '';
-		onLeave();
 	});
 
 	const onStart = (e: any) => {
@@ -57,29 +51,51 @@
 		}
 	};
 
+	let prevX = 0;
+	let prevY = 0;
+	let cursorX = 0;
+	let cursorY = 0;
+
 	const onMove = (e: any) => {
 		if (!selectedEl) return;
-		let currX = e.movementX;
-		let currY = e.movementY;
+		let currX = e.clientX;
+		let currY = e.clientY;
 
-		if (e?.changedTouches.length) {
-			currX = startPosition.x - e?.changedTouches[0].clientX;
-			currY = startPosition.y - e?.changedTouches[0].clientY;
+		if (e?.changedTouches?.length) {
+			currX = e?.changedTouches[0].clientX;
+			currY = e?.changedTouches[0].clientY;
 		}
-		console.log(e?.changedTouches[0].clientX);
-		console.log('x: ', e.movementX || e?.changedTouches[0].clientX);
-		console.log('y: ', e.movementY || e?.changedTouches[0].clientY);
+
+		if (currX > prevX) {
+			cursorX += 1;
+		} else if (currX < prevX) {
+			cursorX -= 1;
+		}
+
+		if (currY > prevY) {
+			cursorY += 1;
+		} else if (currY < prevY) {
+			cursorY -= 1;
+		}
+
+		prevX = currX;
+		prevY = currY;
+		// console.log(e?.changedTouches[0].clientX);
+		console.log('x: ', cursorX);
+		// console.log('y: ', cursorX);
 		console.log('------------------');
 
-		moveX += currX;
-		moveY += currY;
-		aliasCursor.style.transform = `translateX(${moveX}px) translateY(${moveY}px)`;
+		// moveX += currX;
+		// moveY += currY;
+		// cursorX += currX;
+		// cursorY += currY;
+		aliasCursor.style.transform = `translateX(${cursorX}px) translateY(${cursorY}px)`;
 	};
 
 	const onLeave = (e?: any) => {
 		selectedEl = '';
-		moveX = 0;
-		moveY = 0;
+		cursorX = 0;
+		cursorY = 0;
 
 		if (aliasCursor) {
 			aliasCursor.style.transform = '';
@@ -87,7 +103,7 @@
 	};
 
 	$: {
-		console.log(startPosition);
+		// console.log(startPosition);
 		// console.log('X: ', moveX);
 		// console.log('Y: ', moveY);
 	}
@@ -98,7 +114,7 @@
 		class="w-10 h-10 rounded-full bg-red-500 flex items-center absolute justify-center transition"
 		style={`transform : translateX(${moveX}px) translateY(${moveY}px)`}
 	>
-		<div class="w-[50%] h-[50%] bg-white rounded-full" on:dragenter={(e) => console.log(e)} />
+		<div class="w-[50%] h-[50%] bg-white rounded-full" />
 	</div>
 </div>
 

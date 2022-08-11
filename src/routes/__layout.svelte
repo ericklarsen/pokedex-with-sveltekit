@@ -31,13 +31,9 @@
 {/if}
 <!-- Loading -->
 <div
-	class={`max-w-[475px] w-[100%] min-h-[100vh] mx-auto ${
-		pathname !== '/battle' && 'pb-[200px] px-[20px] py-[40px]'
-	} font-mono relative`}
+	class="max-w-[475px] w-[100%] min-h-[100vh] mx-auto pb-[200px] px-[20px] py-[40px] font-mono relative"
 >
 	<slot />
-	{#if pathname !== '/battle'}
-		<Footer />
-	{/if}
+	<Footer />
 </div>
 <BottomMenu />
