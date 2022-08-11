@@ -67,22 +67,22 @@
 		}
 
 		if (currX > prevX) {
-			cursorX += 1;
+			cursorX += 2;
 		} else if (currX < prevX) {
-			cursorX -= 1;
+			cursorX -= 2;
 		}
 
 		if (currY > prevY) {
-			cursorY += 1;
+			cursorY += 2;
 		} else if (currY < prevY) {
-			cursorY -= 1;
+			cursorY -= 2;
 		}
 
 		prevX = currX;
 		prevY = currY;
 		// console.log(e?.changedTouches[0].clientX);
 		console.log('x: ', cursorX);
-		// console.log('y: ', cursorX);
+		console.log('y: ', cursorY);
 		console.log('------------------');
 
 		// moveX += currX;
