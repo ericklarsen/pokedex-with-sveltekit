@@ -46,8 +46,8 @@
 	const onStart = (e: any) => {
 		if (e.target) {
 			selectedEl = e.target;
-			startPosition.x = e.offsetX || e?.changedTouches[0].clientX;
-			startPosition.y = e.offsetY || e?.changedTouches[0].clientY;
+			startPosition.x = e.clientX || e?.changedTouches[0].clientX;
+			startPosition.y = e.clientY || e?.changedTouches[0].clientY;
 		}
 	};
 
@@ -56,8 +56,13 @@
 	let cursorX = 0;
 	let cursorY = 0;
 
+	let intervalsX: any;
+	let intervalsY: any;
+
 	const onMove = (e: any) => {
 		if (!selectedEl) return;
+		clearInterval(intervalsX);
+		clearInterval(intervalsY);
 		let currX = e.clientX;
 		let currY = e.clientY;
 
@@ -66,36 +71,65 @@
 			currY = e?.changedTouches[0].clientY;
 		}
 
-		if (currX > prevX) {
-			cursorX += 2;
-		} else if (currX < prevX) {
-			cursorX -= 2;
+		if (currX > startPosition.x) {
+			// if (currX < 300) {
+			cursorX = currX - startPosition.x;
+			// }
+			if (Math.floor(currX) === Math.floor(prevX)) {
+				intervalsX = setInterval(() => {
+					moveX += 4;
+				}, 100);
+			} else {
+				moveX += 1;
+			}
+		} else if (startPosition.x > currX) {
+			// if (currX > 120) {
+			cursorX = currX - startPosition.x;
+			// }
+			if (Math.floor(currX) === Math.floor(prevX)) {
+				intervalsX = setInterval(() => {
+					moveX -= 4;
+				}, 100);
+			} else {
+				moveX -= 1;
+			}
 		}
 
-		if (currY > prevY) {
-			cursorY += 2;
-		} else if (currY < prevY) {
-			cursorY -= 2;
+		if (currY > startPosition.y) {
+			cursorY = currY - startPosition.y;
+			if (Math.floor(currY) === Math.floor(prevY)) {
+				intervalsY = setInterval(() => {
+					moveY += 4;
+				}, 100);
+			} else {
+				moveY += 1;
+			}
+		} else if (startPosition.y > currY) {
+			cursorY = currY - startPosition.y;
+			if (Math.floor(currY) === Math.floor(prevY)) {
+				intervalsY = setInterval(() => {
+					moveY -= 4;
+				}, 100);
+			} else {
+				moveY -= 1;
+			}
 		}
+
+		// console.log('curr x: ', Math.floor(currX));
+		// console.log('prev x: ', Math.floor(prevX));
+		// console.log('------------------');
 
 		prevX = currX;
 		prevY = currY;
-		// console.log(e?.changedTouches[0].clientX);
-		console.log('x: ', cursorX);
-		console.log('y: ', cursorY);
-		console.log('------------------');
-
-		// moveX += currX;
-		// moveY += currY;
-		// cursorX += currX;
-		// cursorY += currY;
-		aliasCursor.style.transform = `translateX(${cursorX}px) translateY(${cursorY}px)`;
+		// aliasCursor.style.transform = `translateX(${cursorX}px) translateY(${cursorY}px)`;
 	};
 
 	const onLeave = (e?: any) => {
 		selectedEl = '';
 		cursorX = 0;
 		cursorY = 0;
+		clearInterval(intervalsX);
+		clearInterval(intervalsY);
 
 		if (aliasCursor) {
 			aliasCursor.style.transform = '';
@@ -111,7 +145,7 @@
 
 <div class="w-full h-[100vh] bg-black/10 relative">
 	<div
-		class="w-10 h-10 rounded-full bg-red-500 flex items-center absolute justify-center transition"
+		class="w-10 h-10 rounded-full bg-red-500 flex items-center absolute justify-center "
 		style={`transform : translateX(${moveX}px) translateY(${moveY}px)`}
 	>
 		<div class="w-[50%] h-[50%] bg-white rounded-full" />
@@ -121,11 +155,12 @@
 <!-- ----- Analog --- -->
 <div
 	on:mousemove={(e) => onMove(e)}
-	class="fixed z-50 w-[120px] h-[120px] border border-black bottom-[100px] right-[40px] rounded-full flex items-center justify-center "
+	class="fixed z-50 w-[120px] h-[120px]  border-2 border-black/25 bottom-[140px] right-[80px] rounded-full flex items-center justify-center "
 >
 	<div
 		bind:this={aliasCursor}
-		class="w-[60px] h-[60px] rounded-full bg-black absolute z-[-1] origin-center pointer-events-none"
+		style={`transform: translateX(${cursorX}px) translateY(${cursorY}px)`}
+		class="w-[60px] h-[60px] rounded-full bg-gray-400 absolute z-[-1] origin-center pointer-events-none"
 	/>
 	<div bind:this={realCursor} class="w-[60px] h-[60px] rounded-full bg-black/25" />
 </div>
