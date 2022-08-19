@@ -15,6 +15,9 @@
 		x: 0,
 		y: 0
 	};
+
+	let obstacle: any;
+	let myChar: any;
 	onMount(() => {
 		document.body.style.overflow = 'hidden';
 		window.addEventListener('keypress', function (e) {
@@ -72,48 +75,34 @@
 		}
 
 		if (currX > startPosition.x) {
-			// if (currX < 300) {
 			cursorX = currX - startPosition.x;
-			// }
-			if (Math.floor(currX) === Math.floor(prevX)) {
-				intervalsX = setInterval(() => {
-					moveX += 4;
-				}, 100);
-			} else {
-				moveX += 1;
-			}
+			moveX += 1;
 		} else if (startPosition.x > currX) {
-			// if (currX > 120) {
 			cursorX = currX - startPosition.x;
-			// }
-			if (Math.floor(currX) === Math.floor(prevX)) {
-				intervalsX = setInterval(() => {
-					moveX -= 4;
-				}, 100);
-			} else {
-				moveX -= 1;
-			}
+			moveX -= 1;
 		}
 
 		if (currY > startPosition.y) {
 			cursorY = currY - startPosition.y;
-			if (Math.floor(currY) === Math.floor(prevY)) {
-				intervalsY = setInterval(() => {
-					moveY += 4;
-				}, 100);
-			} else {
-				moveY += 1;
-			}
+			moveY += 1;
 		} else if (startPosition.y > currY) {
 			cursorY = currY - startPosition.y;
-			if (Math.floor(currY) === Math.floor(prevY)) {
-				intervalsY = setInterval(() => {
-					moveY -= 4;
-				}, 100);
-			} else {
-				moveY -= 1;
-			}
+			moveY -= 1;
 		}
+
+		const myCharPos = myChar.getBoundingClientRect();
+		const obstaclePos = obstacle.getBoundingClientRect();
+		// console.log(myChar.getBoundingClientRect());
+
+		// Let's improve this behavior
+		if (myCharPos.x >= obstaclePos.x - (obstaclePos.width * 50) / 100) {
+			myChar.style.transform = 'scale(2)';
+			obstacle.remove();
+			console.log('colission');
+			console.log(myChar.style);
+		}
+		myChar.style.top = `${moveY}px`;
+		myChar.style.left = `${moveX}px`;
 
 		// console.log('curr x: ', Math.floor(currX));
 		// console.log('prev x: ', Math.floor(prevX));
@@ -143,10 +132,18 @@
 	}
 </script>
 
-<div class="w-full h-[100vh] bg-black/10 relative">
+<div class="w-full h-[100vh] bg-black/10 relative overflow-hidden">
 	<div
-		class="w-10 h-10 rounded-full bg-red-500 flex items-center absolute justify-center "
-		style={`transform : translateX(${moveX}px) translateY(${moveY}px)`}
+		bind:this={myChar}
+		class="w-10 h-10 rounded-full  bg-red-500 flex items-center absolute justify-center "
+	>
+		<div class="w-[50%] h-[50%] bg-white rounded-full" />
+	</div>
+
+	<div
+		bind:this={obstacle}
+		class="w-10 h-10 rounded-full bg-blue-500 flex items-center absolute justify-center "
+		style={`transform : translateX(130px) translateY(50px)`}
 	>
 		<div class="w-[50%] h-[50%] bg-white rounded-full" />
 	</div>
